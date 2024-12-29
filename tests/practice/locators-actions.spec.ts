@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 import { MainPage } from '../../PageObject/mainPage';
 import { ActionElements } from '../../PageObject/webElements';
 
-test('Locators page', async ({ page }) => {
+test('Register page', async ({ page }) => {
     const mainPage = new MainPage(page);
     const actionElements = new ActionElements(page)
     await mainPage.gotoRegisterPage()
@@ -18,3 +18,30 @@ test('Locators page', async ({ page }) => {
 
     await expect(actionElements.alertDialog).toBeVisible()
 });
+
+test('IFrame page', async ({ page }) => {
+    const mainPage = new MainPage(page);
+    const actionElements = new ActionElements(page)
+    await mainPage.gotoIFramePage()
+
+    await actionElements.clickAtIFrameLearnMoreButton()
+    await expect(actionElements.iFrameAlertLocator).toBeVisible()
+});
+
+test('Checkbox page', async ({ page }) => {
+    const mainPage = new MainPage(page);
+    const actionElements = new ActionElements(page)
+    await mainPage.gotoCheckBoxPage()
+
+    await actionElements.checkAllCheckBoxes()
+    await actionElements.allCheckBoxesAreChecked()
+});
+
+test('Letcode tables Task', async ({ page }) => {
+    const mainPage = new MainPage(page);
+    const actionElements = new ActionElements(page)
+    await mainPage.gotoLetCodeTables()
+
+    expect(await actionElements.parsedPrice()).toEqual(await actionElements.countedPrice())
+});
+
