@@ -6,7 +6,6 @@ test('Register page', async ({ page }) => {
     const mainPage = new MainPage(page);
     const actionElements = new ActionElements(page)
     await mainPage.gotoRegisterPage()
-
     await actionElements.fillFirstNameField()
     await actionElements.fillLastNameField()
     await actionElements.fillPhoneNumberField()
@@ -37,11 +36,26 @@ test('Checkbox page', async ({ page }) => {
     await actionElements.allCheckBoxesAreChecked()
 });
 
-test('Letcode tables Task', async ({ page }) => {
+test('Letcode assert table sum price is correct Task', async ({ page }) => {
     const mainPage = new MainPage(page);
     const actionElements = new ActionElements(page)
     await mainPage.gotoLetCodeTables()
 
-    expect(await actionElements.parsedPrice()).toEqual(await actionElements.countedPrice())
+    await actionElements.assertTableData()
 });
 
+test('Letcode assert Raj is checked Task', async ({ page }) => {
+    const mainPage = new MainPage(page);
+    const actionElements = new ActionElements(page)
+    await mainPage.gotoLetCodeTables()
+    await actionElements.checkRajCheckbox()
+    await expect(actionElements.rajCheckbox).toBeChecked()
+});
+
+test.skip('Letcode assert sorting is working correct Task', async ({ page }) => {
+    const mainPage = new MainPage(page);
+    const actionElements = new ActionElements(page)
+    await mainPage.gotoLetCodeTables()
+
+    // not ready
+});

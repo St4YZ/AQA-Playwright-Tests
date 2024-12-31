@@ -2,6 +2,9 @@ import { faker } from '@faker-js/faker';
 import { Page, Locator, FrameLocator, expect } from '@playwright/test';
 
 class WebElements {
+  constructor(readonly page: Page) {
+    this.page = page;
+  }
   readonly firstNameField: Locator = this.page.getByRole('textbox', { name: 'First Name' })
   readonly lastNameField: Locator = this.page.getByRole('textbox', { name: 'Last Name' })
   readonly phoneNumberField: Locator = this.page.getByPlaceholder('Phone number')
@@ -17,8 +20,7 @@ class WebElements {
   readonly checkBoxes: Locator = this.page.getByRole('checkbox')
   readonly resultPrice: Locator = this.page.locator('tfoot td b')
   readonly allPrices: Locator = this.page.locator('#shopping tbody tr td:nth-child(2)')
-  constructor(readonly page: Page) {
-  }
+  readonly rajCheckbox: Locator = this.page.getByRole('row', { name: 'Raj' }).locator('input')
 }
 
 export class ActionElements extends WebElements {
@@ -36,7 +38,7 @@ export class ActionElements extends WebElements {
     await this.phoneNumberField.fill(faker.phone.number())
   }
   async selectCountryDropdownOption() {
-    await this.countryDropdown.selectOption(faker.location.country())
+    await this.countryDropdown.selectOption('Ukraine')
   }
   async fillEmailAddressField() {
     await this.emailAddressField.fill(faker.internet.email())
@@ -63,14 +65,15 @@ export class ActionElements extends WebElements {
       await expect(checkBox).toBeChecked()
     }
   }
-  async parsedPrice() {
-    return parseInt(await this.resultPrice.innerText())
-  }
-  async countedPrice() {
-    let countedPrice: number  = 0
-    for(let price of await this.allPrices.allInnerTexts()){
-        countedPrice = countedPrice + parseInt(price)
+  async assertTableData() {
+    const sumPrice = parseInt(await this.resultPrice.innerText())
+    let countedPrice: number = 0
+    for (let price of await this.allPrices.allInnerTexts()) {
+      countedPrice = countedPrice + parseInt(price)
     }
-    return countedPrice
+    expect(sumPrice).toEqual(countedPrice)
+  }
+  async checkRajCheckbox() {
+    await this.rajCheckbox.check()
   }
 }
