@@ -6,13 +6,13 @@ class WebElements {
         this.page = page;
     }
     readonly menuItem: Locator = this.page.getByRole('menuitem').getByText('Women')
-    readonly firstProductItem: Locator = this.page.locator('.product-image-container').first()
+    readonly firstProductItem: Locator = this.page.locator('.product-image-container')
     readonly firstSizeOption: Locator = this.page.getByRole('listbox', { name: 'Size' }).getByRole('option').first()
     readonly firstColorOption: Locator = this.page.getByRole('listbox', { name: 'Color' }).getByRole('option').first()
     readonly addToCartButton: Locator = this.page.getByRole('button').getByText('Add to Cart')
     readonly successAlertMessage: Locator = this.page.getByRole('alert')
     readonly myCartLink: Locator = this.page.getByRole('link', { name: 'My cart' })
-    readonly proceedToCheckoutButton: Locator = this.page.getByRole('button', { name: 'Proceed to Checkout' })
+    readonly proceedToCheckOutButton: Locator = this.page.getByText('Proceed to Checkout')
     readonly emailAddressField: Locator = this.page.getByRole('textbox', { name: 'Email' })
     readonly firstNameField: Locator = this.page.getByRole('textbox', { name: 'First Name' })
     readonly lastNameField: Locator = this.page.getByRole('textbox', { name: 'Last Name' })
@@ -27,6 +27,10 @@ class WebElements {
     readonly nextButton: Locator = this.page.getByRole('button', { name: 'Next' })
     readonly placeOrderButton: Locator = this.page.getByRole('button', { name: 'Place Order' })
     readonly successOrderMessage: Locator = this.page.locator('.base')
+    readonly productComparisonButton: Locator = this.page.getByRole('link',{name: 'Add to Compare'})
+    readonly compareProductsLink: Locator = this.page.getByRole('link',{name: 'Compare Products'})
+    readonly compareProductsHeading: Locator = this.page.getByRole('heading',{name: 'Compare Products'})
+    readonly shoppingCartLink: Locator = this.page.getByRole('link',{name: 'Shopping Cart'})
 }
 
 export class ActionElements extends WebElements {
@@ -37,7 +41,16 @@ export class ActionElements extends WebElements {
         await this.menuItem.click()
     }
     async clickAtFirstProductItem() {
-        await this.firstProductItem.click()
+        await this.firstProductItem.first().click()
+    }
+    async clickAtSecondProductItem() {
+        await this.firstProductItem.nth(1).click()
+    }
+    async clickAtProductComparisonButton() {
+        await this.productComparisonButton.click()
+    }
+    async clickAtCompareProductsLink() {
+        await this.compareProductsLink.click()
     }
     async clickAtFirstSizeOption() {
         await this.firstSizeOption.click()
@@ -48,9 +61,45 @@ export class ActionElements extends WebElements {
     async clickAtAddToCartButton() {
         await this.addToCartButton.click()
     }
+    async waitForCompareProductsHeading() {
+        await this.compareProductsHeading.waitFor({state: 'visible'})
+    }
     async selectProductAndAddItToCart() {
         await this.clickAtMenuItem()
         await this.clickAtFirstProductItem()
+        await this.clickAtFirstSizeOption()
+        await this.clickAtFirstColorOption()
+        await this.clickAtAddToCartButton()
+    }
+    async selectFirstProductAndAddItToComparison () {
+        await this.clickAtMenuItem()
+        await this.clickAtFirstProductItem()
+        await this.clickAtFirstSizeOption()
+        await this.clickAtFirstColorOption()
+        await this.clickAtProductComparisonButton()
+    }
+    async selectSecondProductAndGotoComparisonPage () {
+        await this.clickAtMenuItem()
+        await this.clickAtSecondProductItem()
+        await this.clickAtFirstSizeOption()
+        await this.clickAtFirstColorOption()
+        await this.clickAtProductComparisonButton()
+        await this.clickAtCompareProductsLink()
+        await this.waitForCompareProductsHeading()
+    }
+    async clickAtLowestPriceProductItem() {
+        const prices = await this.page.$$eval('.price-wrapper', (elements) =>
+            elements.map(el => {
+                const priceText = el.textContent?.trim().replace('$', '');
+                return priceText ? parseFloat(priceText) : 0;
+            })
+        );
+        const lowestPrice = Math.min(...prices);
+        const lowestPriceIndex = prices.indexOf(lowestPrice);
+        const addToCartButtons = await this.page.$$('.tocart');
+        await addToCartButtons[lowestPriceIndex].click();
+    }
+    async addItemToCart() {
         await this.clickAtFirstSizeOption()
         await this.clickAtFirstColorOption()
         await this.clickAtAddToCartButton()
@@ -59,11 +108,15 @@ export class ActionElements extends WebElements {
         await this.myCartLink.click()
     }
     async clickAtProceedToCheckoutButton() {
-        await this.proceedToCheckoutButton.click()
+        await this.proceedToCheckOutButton.click()
     }
     async clickAtMyCardandProceedToCheckoutButtons() {
         await this.myCartLink.click()
-        await this.proceedToCheckoutButton.click()
+        await this.proceedToCheckOutButton.click()
+    }
+    async clickAtMyCartLinkAndProceedToCheckoutButton() {
+        await this.shoppingCartLink.click()
+        await this.proceedToCheckOutButton.nth(1).click()
     }
     async fillEmailField() {
         await this.emailAddressField.fill(faker.internet.email())

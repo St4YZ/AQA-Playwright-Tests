@@ -13,3 +13,18 @@ test('Magento e-commerce first task', async ({ page }) => {
     await actionElements.acceptOrder()
     await expect(actionElements.successOrderMessage).toHaveText('Thank you for your purchase!')
 });
+
+test('Magento e-commerce second task', async ({ page }) => {
+    const mainPage = new MainPage(page);
+    const actionElements = new ActionElements(page);
+    await mainPage.gotoMagentoMainPage()
+    await actionElements.selectFirstProductAndAddItToComparison()
+    await actionElements.selectSecondProductAndGotoComparisonPage()
+    await actionElements.clickAtLowestPriceProductItem()
+    await actionElements.addItemToCart()
+    await expect(actionElements.successAlertMessage).toBeVisible()
+    await actionElements.clickAtMyCartLinkAndProceedToCheckoutButton()
+    await actionElements.fillAllFieldsToBuyProduct()
+    await actionElements.acceptOrder()
+    await expect(actionElements.successOrderMessage).toHaveText('Thank you for your purchase!')
+});
