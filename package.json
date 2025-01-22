@@ -3,7 +3,11 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "test:headed": "playwright test --config=playwright.config.ts --project=chromium --headed",
+    "test:headless": "playwright test --config=playwright.config.ts --project=chromium --reporter=dot",
+    "test:debug": "playwright test --config=playwright.config.ts --project=chromium --debug"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/St4YZ/AQA-Playwright-Tests.git"

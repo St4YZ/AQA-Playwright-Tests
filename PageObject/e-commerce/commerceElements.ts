@@ -11,7 +11,7 @@ class WebElements {
     readonly firstColorOption: Locator = this.page.getByRole('listbox', { name: 'Color' }).getByRole('option').first()
     readonly addToCartButton: Locator = this.page.getByRole('button').getByText('Add to Cart')
     readonly successAlertMessage: Locator = this.page.getByRole('alert')
-    readonly myCartLink: Locator = this.page.getByRole('link', { name: 'My cart' })
+    readonly myCartLink: Locator = this.page.getByRole('link', { name: 'Shopping cart' })
     readonly proceedToCheckOutButton: Locator = this.page.getByText('Proceed to Checkout')
     readonly emailAddressField: Locator = this.page.getByRole('textbox', { name: 'Email' })
     readonly firstNameField: Locator = this.page.getByRole('textbox', { name: 'First Name' })
@@ -108,15 +108,15 @@ export class ActionElements extends WebElements {
         await this.myCartLink.click()
     }
     async clickAtProceedToCheckoutButton() {
-        await this.proceedToCheckOutButton.click()
+        await this.proceedToCheckOutButton.nth(1).click()
     }
     async clickAtMyCardandProceedToCheckoutButtons() {
         await this.myCartLink.click()
-        await this.proceedToCheckOutButton.click()
+        await this.clickAtProceedToCheckoutButton()
     }
     async clickAtMyCartLinkAndProceedToCheckoutButton() {
         await this.shoppingCartLink.click()
-        await this.proceedToCheckOutButton.nth(1).click()
+        await this.clickAtProceedToCheckoutButton()
     }
     async fillEmailField() {
         await this.emailAddressField.fill(faker.internet.email())

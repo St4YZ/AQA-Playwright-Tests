@@ -1,7 +1,6 @@
 import { Page } from '@playwright/test';
 
 export class MainPage {
-  readonly netlifyBaseURL: string = 'https://qa-practice.netlify.app'
   readonly letCode: string = 'https://letcode.in'
   readonly magentoMainPage: string = 'https://magento.softwaretestingboard.com/'
   
@@ -9,13 +8,13 @@ export class MainPage {
     this.page = page;
   }
   async gotoRegisterPage() {
-    await this.page.goto(this.netlifyBaseURL + '/register')
+    await this.page.goto('/register')
   }
   async gotoIFramePage() {
-    await this.page.goto(this.netlifyBaseURL + '/iframe')
+    await this.page.goto('/iframe')
   }
   async gotoCheckBoxPage() {
-    await this.page.goto(this.netlifyBaseURL + '/checkboxes')
+    await this.page.goto('/checkboxes')
   }
   async gotoLetCodeTables() {
     await this.page.goto(this.letCode + '/table')
@@ -23,5 +22,4 @@ export class MainPage {
   async gotoMagentoMainPage() {
     await this.page.goto(this.magentoMainPage)
   }
-
 }
